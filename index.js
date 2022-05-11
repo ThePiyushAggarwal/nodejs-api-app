@@ -1,8 +1,12 @@
 const express = require('express')
 const app = express()
 const axios = require('axios')
+const morgan = require('morgan')
 const PORT = 5000
 const FETCH_FROM_URL = 'https://jsonplaceholder.typicode.com'
+
+// Logging the requests
+app.use(morgan('tiny'))
 
 // TASK 1
 app.get('/todos', async (_, response) => {
@@ -11,7 +15,7 @@ app.get('/todos', async (_, response) => {
     .then((res) => res.data)
     .catch((error) => console.log(error))
 
-  // delete the userId keys
+  // Delete the userId keys
   const final = data.map((user) => {
     delete user.userId
     return user
@@ -22,7 +26,12 @@ app.get('/todos', async (_, response) => {
 
 // TASK 2
 app.get('/user/:id', async (request, response) => {
-  const userId = request.params.id
+  const userId = parseInt(request.params.id)
+
+  if (!userId || userId > 10 || userId < 0) {
+    response.json({ message: 'Please enter a number between 1 and 10' })
+    return
+  }
 
   // Getting user data
   const userData = await axios
@@ -54,4 +63,18 @@ app.get('/user/:id', async (request, response) => {
   response.send(finalUserData)
 })
 
+// Extra responses for handling paths
+app.get('/', (_, response) =>
+  response.send({ message: 'Welcome to NodeJS app' })
+)
+
+app.get('/user', (_, response) =>
+  response.json({ message: 'Please make request to /user/<number>' })
+)
+
+app.get('*', (_, response) =>
+  response.json({ message: 'OOPS! Path does not exist' })
+)
+
+//
 app.listen(PORT, () => console.log(`Server is running on PORT: ${PORT}`))
