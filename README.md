@@ -24,3 +24,7 @@ You can make requests on:
 ### React app integrated
 
 Go to browser after running the server and open `http://localhost:5000`
+
+### Bug fix pending
+
+Sometimes, when I make on `/user/<number>`, I get the response without the `todos` array. Maybe it is because of the slow network problem I was having that day.
