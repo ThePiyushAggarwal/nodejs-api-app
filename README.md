@@ -23,6 +23,8 @@ You can make requests on:
 
 ### React app integrated
 
+You need to add a .env file in root folder and add `NODE_ENV = production`. After that.
+
 Go to browser after running the server and open `http://localhost:5000`
 
 ### Bug fix pending
