@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const axios = require('axios')
 const morgan = require('morgan')
+const path = require('path')
 const PORT = 5000
 const FETCH_FROM_URL = 'https://jsonplaceholder.typicode.com'
 
@@ -64,17 +66,17 @@ app.get('/user/:id', async (request, response) => {
 })
 
 // Extra responses for handling paths
-app.get('/', (_, response) =>
-  response.send({ message: 'Welcome to NodeJS app' })
-)
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('./build'))
 
-app.get('/user', (_, response) =>
-  response.json({ message: 'Please make request to /user/<number>' })
-)
-
-app.get('*', (_, response) =>
-  response.json({ message: 'OOPS! Path does not exist' })
-)
+  app.get('*', (_, response) =>
+    response.sendFile(path.join(__dirname, '/build/index.html'))
+  )
+} else {
+  app.get('/', (_, response) =>
+    response.send({ message: 'Welcome to NodeJS app' })
+  )
+}
 
 //
 app.listen(PORT, () => console.log(`Server is running on PORT: ${PORT}`))
